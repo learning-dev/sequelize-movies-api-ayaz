@@ -1,0 +1,16 @@
+{
+  "name": "movies_api_seqlize_ayaz",
+  "version": "1.0.0",
+  "description": "movies api using orm sequelize ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ayaz",
+  "license": "ISC",
+  "dependencies": {
+    "mysql": "^2.17.1",
+    "sequelize": "^5.21.2",
+    "sequelize-cli": "^5.5.1"
+  }
+}
