@@ -1,0 +1,1 @@
+## Sequelize Movies Rest API
