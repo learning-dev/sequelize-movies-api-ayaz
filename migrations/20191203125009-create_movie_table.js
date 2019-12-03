@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable("Movie", {
+    return queryInterface.createTable("Movies", {
       id: {
         type: Sequelize.INTEGER(11),
         allowNull: false,
@@ -19,6 +19,12 @@ module.exports = {
       runtime: {
         type: Sequelize.INTEGER(10),
       },
+      genre: {
+        type: Sequelize.STRING(100),
+      },
+      rating:{
+        type: Sequelize.FLOAT(3),
+      },
       metascore: {
         type: Sequelize.STRING(10),
       },
@@ -32,7 +38,7 @@ module.exports = {
         type: Sequelize.INTEGER(11),
         allowNull: false,
         references: {
-          model: 'Director',
+          model: 'Directors',
           key: 'id'  
         }
       },
@@ -46,6 +52,6 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("Movie");
+    return queryInterface.dropTable("Movies");
   }
 };
