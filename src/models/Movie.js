@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER(2),
       allowNull: false, 
       autoIncrement: true, 
-      primaryKey: true
+      primaryKey: true,
     },
     title: DataTypes.STRING(100),
     description: DataTypes.STRING(100),
@@ -18,9 +18,10 @@ module.exports = (sequelize, DataTypes) => {
     director_id: DataTypes.INTEGER(11),
     actor: DataTypes.STRING(200),
     year: DataTypes.INTEGER(4)
-  },{});
+  }, {});
   
   Movie.associate = function(models) {
     Movie.belongsTo(models.Director, {foreignKey: 'id', as: 'director_id'})
   };
+  return Movie;
 };
