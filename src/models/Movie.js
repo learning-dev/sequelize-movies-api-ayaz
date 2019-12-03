@@ -1,26 +1,26 @@
-module.exports = ( ) => {
-    const Movie = sequelize.define('Movie', {
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  const Movie = sequelize.define('Movie', {
     id:{
-      type: Sequelize.INTEGER(2),
+      type: DataTypes.INTEGER(2),
       allowNull: false, 
       autoIncrement: true, 
       primaryKey: true
     },
-    title: Sequelize.STRING(100),
-    description: Sequelize.STRING(100),
-    runtime: Sequelize.INTEGER(10),
-    genre: Sequelize.STRING(10),
-    rating: Sequelize.FLOAT(3),
-    metascore: Sequelize.STRING(10),
-    votes: Seqxuelize.INTEGER(11),
-    gross_earning_mil: Sequelize.STRING(20),
-    director_id: Sequelize.INTEGER(11),
-    actor: Sequelize.STRING(200),
-    year: Sequelize.INTEGER(4)
-  });
-
+    title: DataTypes.STRING(100),
+    description: DataTypes.STRING(100),
+    runtime: DataTypes.INTEGER(10),
+    genre: DataTypes.STRING(10),
+    rating: DataTypes.FLOAT(3),
+    metascore: DataTypes.STRING(10),
+    votes: DataTypes.INTEGER(11),
+    gross_earning_mil: DataTypes.STRING(20),
+    director_id: DataTypes.INTEGER(11),
+    actor: DataTypes.STRING(200),
+    year: DataTypes.INTEGER(4)
+  },{});
+  
   Movie.associate = function(models) {
     Movie.belongsTo(models.Director, {foreignKey: 'id', as: 'director_id'})
   };
-  return Movie;
-}
+};
