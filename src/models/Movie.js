@@ -1,10 +1,10 @@
-'use strict';
+
 module.exports = (sequelize, DataTypes) => {
   const Movie = sequelize.define('Movie', {
-    id:{
+    id: {
       type: DataTypes.INTEGER(2),
-      allowNull: false, 
-      autoIncrement: true, 
+      allowNull: false,
+      autoIncrement: true,
       primaryKey: true,
     },
     title: DataTypes.STRING(100),
@@ -17,11 +17,12 @@ module.exports = (sequelize, DataTypes) => {
     gross_earning_mil: DataTypes.STRING(20),
     director_id: DataTypes.INTEGER(11),
     actor: DataTypes.STRING(200),
-    year: DataTypes.INTEGER(4)
+    year: DataTypes.INTEGER(4),
   }, {});
-  
-  Movie.associate = function(models) {
-    Movie.belongsTo(models.Director, {foreignKey: 'id', as: 'director_id'})
+
+  // eslint-disable-next-line func-names
+  Movie.associate = function (models) {
+    Movie.belongsTo(models.Director, { foreignKey: 'id', as: 'director_id' });
   };
   return Movie;
 };

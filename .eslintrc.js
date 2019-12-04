@@ -1,11 +1,20 @@
-module.export = {
-  "extends": "airbnb-base",
-  "rules": {
-   "strict": "off",
-   "no-console": "off"
+module.exports = {
+  env: {
+    browser: true,
+    commonjs: true,
+    es6: true,
   },
-  "parserOptions": {
-    "ecmaVersion": 6
-  }
+  extends: [
+    'airbnb-base',
+  ],
+  globals: {
+    Atomics: 'readonly',
+    SharedArrayBuffer: 'readonly',
+  },
+  parserOptions: {
+    ecmaVersion: 2018,
+  },
+  rules: {
+    "no-console": "off"
+  },
 };
-
