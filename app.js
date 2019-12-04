@@ -42,6 +42,30 @@ app.get('/api/movies/:id', (req, res) => {
   });
 });
 
+app.post('/api/movies/', (req, res) => {
+  const movieToAdd = req.body;
+  console.log(movieToAdd);
+  const promiseObject = Movie.create(movieToAdd);
+  promiseObject.then((result) => {
+    let msg;
+    let statusCode;
+    console.log('result', result);
+    // eslint-disable-next-line no-underscore-dangle
+    if (result._options.isNewRecord === true) {
+      msg = `Resource have been created with id ${result.dataValues.id}`;
+      statusCode = 201;
+      const resultJson = { data: { message: msg } };
+      res.status(statusCode).send(resultJson);
+    }
+  }).catch((error) => {
+    console.log(error);
+    const msg = 'Error: can\'t resource. Make sure you check the given "fields" and user previleges again or the resource already exists.';
+    const statusCode = 400;
+    const resultJson = { data: { message: msg } };
+    res.status(statusCode).send(resultJson);
+  });
+});
+
 app.delete('/api/movies/:id', (req, res) => {
   const givenId = req.params.id;
   const promiseObject = Movie.destroy({ where: { id: givenId } });
@@ -87,6 +111,32 @@ app.get('/api/directors/:id', (req, res) => {
     res.status(404).send(errorMessage);
   });
 });
+
+
+app.post('/api/directors/', (req, res) => {
+  const directorToAdd = req.body;
+  console.log(directorToAdd);
+  const promiseObject = Director.create(directorToAdd);
+  promiseObject.then((result) => {
+    let msg;
+    let statusCode;
+    console.log('result', result);
+    // eslint-disable-next-line no-underscore-dangle
+    if (result._options.isNewRecord === true) {
+      msg = `Resource have been created with id ${result.dataValues.id}`;
+      statusCode = 201;
+      const resultJson = { data: { message: msg } };
+      res.status(statusCode).send(resultJson);
+    }
+  }).catch((error) => {
+    console.log(error);
+    const msg = 'Error: can\'t resource. Make sure you check the given "director_name" field  and user previleges again or the resource already exists.';
+    const statusCode = 400;
+    const resultJson = { data: { message: msg } };
+    res.status(statusCode).send(resultJson);
+  });
+});
+
 
 app.delete('/api/directors/:id', (req, res) => {
   const givenId = req.params.id;

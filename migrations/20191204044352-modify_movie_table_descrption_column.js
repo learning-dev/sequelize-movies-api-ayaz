@@ -1,14 +1,10 @@
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface.changeColumn('Movies', 'description', {
+  up: (queryInterface, Sequelize) => queryInterface.changeColumn('Movies', 'description', {
     type: Sequelize.STRING(255),
-  });
-}
+  }),
 
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.changeColumn('Movies', 'description', {
+  down: (queryInterface, Sequelize) => queryInterface.changeColumn('Movies', 'description', {
     type: Sequelize.STRING(100),
-  });
-}
+  }),
 };
