@@ -45,23 +45,11 @@ module.exports =  async () => {
     });
     movieObjectsToInsert.push(singleMovie);
   });
-  // await Director.bulkCreate(directorObjectsToInsert)
-  //               .then((entry) => {console.log(entry)})
-  //               .catch((err) => console.log(err));
-  await Movie.create({
-    id:1,
-    title: 'xyz', 
-    description:'xdz',
-    runtime: 151,
-    genre:'Crime',
-    rating:8.5,
-    metascore:999, 
-    votes:23,
-    gross_earning_mil:'21312.2',
-    director_id:1, 
-    actor:'sdfs',
-    year:'1932',
-  }).then((entry) => {console.log(entry)})
-    .catch((err) => console.log(err));
+  await Director.bulkCreate(directorObjectsToInsert)
+                .then((entry) => {console.log(entry)})
+                .catch((err) => console.log(err));
+  await Movie.bulkCreate(movieObjectsToInsert)
+             .then((entry) => {console.log(entry)})
+             .catch((err) => console.log(err));
 
 }
