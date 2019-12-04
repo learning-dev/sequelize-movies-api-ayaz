@@ -57,9 +57,8 @@ app.delete('/api/movies/:id', (req, res) => {
     }
     const resultJson = { data: { message: msg } };
     res.status(statusCode).send(resultJson);
-  });
+  }).catch((err) => console.log(err));
 });
-
 
 
 app.get('/api/directors', (req, res) => {
