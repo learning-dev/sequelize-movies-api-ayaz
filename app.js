@@ -13,9 +13,7 @@ const app = express();
 app.use(bodyParser.json());
 
 const Movie = db.import('./src/models/movie');
-const Director = require('./src/models/Director');
-
-console.log(Movie);
+const Director = require('./src/models/director');
 
 app.get('/api/movies', (req, res) => {
   const promiseObject = Movie.findAll();
@@ -39,6 +37,38 @@ app.get('/api/movies/:id', (req, res) => {
     console.log(error);
     const errorMessage = { data: { errorMessage: `Resource with id ${req.params.id} doesn't exist` } };
     res.status(404).send(errorMessage);
+  });
+});
+
+app.put('/api/movies/:id', (req, res) => {
+  const fieldsToUpdate = req.body;
+  const movieId = req.params.id;
+  const fields = Object.keys(fieldsToUpdate);
+  let msg;
+  let statusCode;
+  const promiseObject = Movie.findOne({ where: { id: movieId } });
+  promiseObject.then((result) => {
+    console.log('inside exists block', result);
+    if (result !== null) {
+      Movie.update(fieldsToUpdate, { where: { id: movieId } })
+        .then((updateResult) => {
+          if (updateResult[0]) {
+            msg = `All the fields i.e. ${fields.join(', ')} are updated successfully`;
+            statusCode = 200;
+          } else {
+            msg = `Error: one of the '${fields.join(', ')}' is incorrect. OR field has "SAME" value. Please check the field name or Value of the field again`;
+            statusCode = 400;
+          }
+          res.status(statusCode).send({ data: { message: msg } });
+        }).catch((err) => {
+          console.log(err);
+        });
+    } else {
+      msg = `Error: Item with id ${req.params.id} doesn't exitst.`;
+      res.status(404).send({ data: { message: msg } });
+    }
+  }).catch((error) => {
+    console.log(error);
   });
 });
 
@@ -109,6 +139,38 @@ app.get('/api/directors/:id', (req, res) => {
     console.log(error);
     const errorMessage = { data: { errorMessage: `Resource with id ${req.params.id} doesn't exist` } };
     res.status(404).send(errorMessage);
+  });
+});
+
+app.put('/api/directors/:id', (req, res) => {
+  const fieldsToUpdate = req.body;
+  const movieId = req.params.id;
+  const fields = Object.keys(fieldsToUpdate);
+  let msg;
+  let statusCode;
+  const promiseObject = Director.findOne({ where: { id: movieId } });
+  promiseObject.then((result) => {
+    console.log('inside exists block', result);
+    if (result !== null) {
+      Director.update(fieldsToUpdate, { where: { id: movieId } })
+        .then((updateResult) => {
+          if (updateResult[0]) {
+            msg = `All the fields i.e. ${fields.join(', ')} are updated successfully`;
+            statusCode = 200;
+          } else {
+            msg = `Error: one of the '${fields.join(', ')}' is incorrect. OR field has "SAME" value. Please check the field name or Value of the field again`;
+            statusCode = 400;
+          }
+          res.status(statusCode).send({ data: { message: msg } });
+        }).catch((err) => {
+          console.log(err);
+        });
+    } else {
+      msg = `Error: Item with id ${req.params.id} doesn't exitst.`;
+      res.status(404).send({ data: { message: msg } });
+    }
+  }).catch((error) => {
+    console.log(error);
   });
 });
 
