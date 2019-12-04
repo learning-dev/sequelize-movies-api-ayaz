@@ -42,6 +42,25 @@ app.get('/api/movies/:id', (req, res) => {
   });
 });
 
+app.delete('/api/movies/:id', (req, res) => {
+  const givenId = req.params.id;
+  const promiseObject = Movie.destroy({ where: { id: givenId } });
+  promiseObject.then((result) => {
+    let msg = '';
+    let statusCode;
+    if (result) {
+      msg = `Resource with id ${req.params.id} is deleted sucessfully.`;
+      statusCode = 200;
+    } else {
+      msg = `Error: Can't delete the resource with id ${req.params.id}. Either is moved or doesn't exist.`;
+      statusCode = 404;
+    }
+    const resultJson = { data: { message: msg } };
+    res.status(statusCode).send(resultJson);
+  });
+});
+
+
 
 app.get('/api/directors', (req, res) => {
   const promiseObject = Director.findAll();
@@ -70,6 +89,23 @@ app.get('/api/directors/:id', (req, res) => {
   });
 });
 
+app.delete('/api/directors/:id', (req, res) => {
+  const givenId = req.params.id;
+  const promiseObject = Director.destroy({ where: { id: givenId } });
+  promiseObject.then((result) => {
+    let msg = '';
+    let statusCode;
+    if (result) {
+      msg = `Resource with id ${req.params.id} is deleted sucessfully.`;
+      statusCode = 200;
+    } else {
+      msg = `Error: Can't delete the resource with id ${req.params.id}. Either is moved or doesn't exist.`;
+      statusCode = 404;
+    }
+    const resultJson = { data: { message: msg } };
+    res.status(statusCode).send(resultJson);
+  });
+});
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
