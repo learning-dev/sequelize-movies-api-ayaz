@@ -1,17 +1,10 @@
-
 const movieData = require('./movies.json');
-const Director = require('../models/Director').default;
-const db = require('./connection');
 
-module.exports = async () => {
-  db.authenticate().then(() => console.log('x'));
-  const Movie = db.import('../models/movie.js');
-  console.log(Movie);
-  console.log(Director);
+const directorObjectsToInsert = [];
+const movieObjectsToInsert = [];
+
+const convertToRequiredFormat = () => {
   const listOfDirector = [];
-  const directorObjectsToInsert = [];
-  const movieObjectsToInsert = [];
-
   movieData.forEach((movie) => {
     if (listOfDirector.indexOf(movie.Director) === -1) {
       listOfDirector.push(movie.Director);
@@ -44,10 +37,8 @@ module.exports = async () => {
     });
     movieObjectsToInsert.push(singleMovie);
   });
-  await Director.bulkCreate(directorObjectsToInsert)
-    .then((entry) => { console.log(entry); })
-    .catch((err) => console.log(err));
-  await Movie.bulkCreate(movieObjectsToInsert)
-    .then((entry) => { console.log(entry); })
-    .catch((err) => console.log(err));
 };
+
+convertToRequiredFormat();
+
+module.exports = { directorObjectsToInsert, movieObjectsToInsert };
