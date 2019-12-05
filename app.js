@@ -8,8 +8,8 @@ const logger = require('./config/winston');
 
 const app = express();
 app.use(bodyParser.json());
-//app.use(morgan('dev', { stream: winston.stream }));
 app.use(morgan('common', { stream: fs.createWriteStream(path.join(__dirname, 'logs/access.log'), { flags: 'a' }) }));
+
 const db = require('./src/database/connection');
 
 db.authenticate()
@@ -74,7 +74,7 @@ app.put('/api/movies/:id', (req, res) => {
           res.status(statusCode).send({ data: { message: msg } });
         }).catch((err) => {
           console.log(err);
-          logger.error(error);
+          logger.error(err);
         });
     } else {
       msg = `Error: Item with id ${req.params.id} doesn't exitst.`;
