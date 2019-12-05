@@ -1,16 +1,24 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
+const logger = require('./config/winston');
 
+
+const app = express();
+app.use(bodyParser.json());
+//app.use(morgan('dev', { stream: winston.stream }));
+app.use(morgan('common', { stream: fs.createWriteStream(path.join(__dirname, 'logs/access.log'), { flags: 'a' }) }));
 const db = require('./src/database/connection');
 
 db.authenticate()
   .then(() => console.log('connected to Db!'))
   .catch((err) => {
     console.log(err);
+    logger.error(err);
   });
 
-const app = express();
-app.use(bodyParser.json());
 
 const Movie = db.import('./src/models/movie');
 const Director = require('./src/models/director');
@@ -23,7 +31,10 @@ app.get('/api/movies', (req, res) => {
     } else {
       throw (new Error('No data sent from table.'));
     }
-  }).catch((err) => res.status(404).send({ data: { error: "Internal error! can't retrieve movies." } }));
+  }).catch((err) => {
+    res.status(404).send({ data: { error: "Internal error! can't retrieve movies." } });
+    logger.error(err);
+  });
 });
 
 app.get('/api/movies/:id', (req, res) => {
@@ -35,6 +46,7 @@ app.get('/api/movies/:id', (req, res) => {
     res.status(200).send(result);
   }).catch((error) => {
     console.log(error);
+    logger.error(error);
     const errorMessage = { data: { errorMessage: `Resource with id ${req.params.id} doesn't exist` } };
     res.status(404).send(errorMessage);
   });
@@ -62,6 +74,7 @@ app.put('/api/movies/:id', (req, res) => {
           res.status(statusCode).send({ data: { message: msg } });
         }).catch((err) => {
           console.log(err);
+          logger.error(error);
         });
     } else {
       msg = `Error: Item with id ${req.params.id} doesn't exitst.`;
@@ -69,6 +82,7 @@ app.put('/api/movies/:id', (req, res) => {
     }
   }).catch((error) => {
     console.log(error);
+    logger.error(error);
   });
 });
 
@@ -89,6 +103,7 @@ app.post('/api/movies/', (req, res) => {
     }
   }).catch((error) => {
     console.log(error);
+    logger.error(error);
     const msg = 'Error: can\'t resource. Make sure you check the given "fields" and user previleges again or the resource already exists.';
     const statusCode = 400;
     const resultJson = { data: { message: msg } };
@@ -99,19 +114,25 @@ app.post('/api/movies/', (req, res) => {
 app.delete('/api/movies/:id', (req, res) => {
   const givenId = req.params.id;
   const promiseObject = Movie.destroy({ where: { id: givenId } });
+  let msg = '';
+  let statusCode;
+  let resultJson = {};
+
   promiseObject.then((result) => {
-    let msg = '';
-    let statusCode;
     if (result) {
       msg = `Resource with id ${req.params.id} is deleted sucessfully.`;
       statusCode = 200;
     } else {
-      msg = `Error: Can't delete the resource with id ${req.params.id}. Either is moved or doesn't exist.`;
-      statusCode = 404;
+      throw new Error(`Can't delete the resource with id ${req.params.id}. Either is moved or doesn't exist.`);
     }
-    const resultJson = { data: { message: msg } };
+  }).catch((err) => {
+    msg = `Can't delete the resource with id ${req.params.id}. Either is moved or doesn't exist.`;
+    statusCode = 404;
+    logger.error(err);
+  }).finally(() => {
+    resultJson = { data: { message: msg } };
     res.status(statusCode).send(resultJson);
-  }).catch((err) => console.log(err));
+  });
 });
 
 
@@ -125,6 +146,7 @@ app.get('/api/directors', (req, res) => {
     }
   }).catch((err) => {
     console.log(err);
+    logger.error(err);
     res.status(404).send({ data: { error: "Internal error! can't retrieve Directors." } });
   });
 });
@@ -137,6 +159,7 @@ app.get('/api/directors/:id', (req, res) => {
     res.status(200).send(result);
   }).catch((error) => {
     console.log(error);
+    logger.error(error);
     const errorMessage = { data: { errorMessage: `Resource with id ${req.params.id} doesn't exist` } };
     res.status(404).send(errorMessage);
   });
@@ -163,6 +186,7 @@ app.put('/api/directors/:id', (req, res) => {
           }
           res.status(statusCode).send({ data: { message: msg } });
         }).catch((err) => {
+          logger.error(err);
           console.log(err);
         });
     } else {
@@ -170,6 +194,7 @@ app.put('/api/directors/:id', (req, res) => {
       res.status(404).send({ data: { message: msg } });
     }
   }).catch((error) => {
+    logger.error(error);
     console.log(error);
   });
 });
@@ -191,6 +216,7 @@ app.post('/api/directors/', (req, res) => {
       res.status(statusCode).send(resultJson);
     }
   }).catch((error) => {
+    logger.error(error);
     console.log(error);
     const msg = 'Error: can\'t resource. Make sure you check the given "director_name" field  and user previleges again or the resource already exists.';
     const statusCode = 400;
@@ -203,9 +229,10 @@ app.post('/api/directors/', (req, res) => {
 app.delete('/api/directors/:id', (req, res) => {
   const givenId = req.params.id;
   const promiseObject = Director.destroy({ where: { id: givenId } });
+  let msg = '';
+  let statusCode;
+  let resultJson;
   promiseObject.then((result) => {
-    let msg = '';
-    let statusCode;
     if (result) {
       msg = `Resource with id ${req.params.id} is deleted sucessfully.`;
       statusCode = 200;
@@ -215,8 +242,16 @@ app.delete('/api/directors/:id', (req, res) => {
     }
     const resultJson = { data: { message: msg } };
     res.status(statusCode).send(resultJson);
+  }).catch((err) => {
+    msg = `Can't delete the resource with id ${req.params.id}. Either is moved or doesn't exist.`;
+    statusCode = 404;
+    logger.error(err);
+  }).finally(() => {
+    resultJson = { data: { message: msg } };
+    res.status(statusCode).send(resultJson);
   });
 });
+
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
