@@ -240,7 +240,7 @@ app.delete('/api/directors/:id', (req, res) => {
       msg = `Error: Can't delete the resource with id ${req.params.id}. Either is moved or doesn't exist.`;
       statusCode = 404;
     }
-    const resultJson = { data: { message: msg } };
+    resultJson = { data: { message: msg } };
     res.status(statusCode).send(resultJson);
   }).catch((err) => {
     msg = `Can't delete the resource with id ${req.params.id}. Either is moved or doesn't exist.`;
