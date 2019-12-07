@@ -16,7 +16,7 @@ db.authenticate()
   .then(() => console.log('connected to Db!'))
   .catch((err) => {
     console.log(err);
-    logger.error(err);
+    logger.error(err.stack);
   });
 
 
@@ -33,7 +33,7 @@ app.get('/api/movies', (req, res) => {
     }
   }).catch((err) => {
     res.status(404).send({ data: { error: "Internal error! can't retrieve movies." } });
-    logger.error(err);
+    logger.error(err.stack);
   });
 });
 
@@ -46,7 +46,7 @@ app.get('/api/movies/:id', (req, res) => {
     res.status(200).send(result);
   }).catch((error) => {
     console.log(error);
-    logger.error(error);
+    logger.error(error.stack);
     const errorMessage = { data: { errorMessage: `Resource with id ${req.params.id} doesn't exist` } };
     res.status(404).send(errorMessage);
   });
@@ -74,7 +74,7 @@ app.put('/api/movies/:id', (req, res) => {
           res.status(statusCode).send({ data: { message: msg } });
         }).catch((err) => {
           console.log(err);
-          logger.error(err);
+          logger.error(err.stack);
         });
     } else {
       msg = `Error: Item with id ${req.params.id} doesn't exitst.`;
@@ -82,7 +82,7 @@ app.put('/api/movies/:id', (req, res) => {
     }
   }).catch((error) => {
     console.log(error);
-    logger.error(error);
+    logger.error(error.stack);
   });
 });
 
@@ -103,7 +103,7 @@ app.post('/api/movies/', (req, res) => {
     }
   }).catch((error) => {
     console.log(error);
-    logger.error(error);
+    logger.error(error.stack);
     const msg = 'Error: can\'t resource. Make sure you check the given "fields" and user previleges again or the resource already exists.';
     const statusCode = 400;
     const resultJson = { data: { message: msg } };
@@ -128,7 +128,7 @@ app.delete('/api/movies/:id', (req, res) => {
   }).catch((err) => {
     msg = `Can't delete the resource with id ${req.params.id}. Either is moved or doesn't exist.`;
     statusCode = 404;
-    logger.error(err);
+    logger.error(err.stack);
   }).finally(() => {
     resultJson = { data: { message: msg } };
     res.status(statusCode).send(resultJson);
@@ -146,7 +146,7 @@ app.get('/api/directors', (req, res) => {
     }
   }).catch((err) => {
     console.log(err);
-    logger.error(err);
+    logger.error(err.stack);
     res.status(404).send({ data: { error: "Internal error! can't retrieve Directors." } });
   });
 });
@@ -159,7 +159,7 @@ app.get('/api/directors/:id', (req, res) => {
     res.status(200).send(result);
   }).catch((error) => {
     console.log(error);
-    logger.error(error);
+    logger.error(error.stack);
     const errorMessage = { data: { errorMessage: `Resource with id ${req.params.id} doesn't exist` } };
     res.status(404).send(errorMessage);
   });
@@ -186,7 +186,7 @@ app.put('/api/directors/:id', (req, res) => {
           }
           res.status(statusCode).send({ data: { message: msg } });
         }).catch((err) => {
-          logger.error(err);
+          logger.error(err.stack);
           console.log(err);
         });
     } else {
@@ -194,7 +194,7 @@ app.put('/api/directors/:id', (req, res) => {
       res.status(404).send({ data: { message: msg } });
     }
   }).catch((error) => {
-    logger.error(error);
+    logger.error(error.stack);
     console.log(error);
   });
 });
@@ -216,7 +216,7 @@ app.post('/api/directors/', (req, res) => {
       res.status(statusCode).send(resultJson);
     }
   }).catch((error) => {
-    logger.error(error);
+    logger.error(error.stack);
     console.log(error);
     const msg = 'Error: can\'t resource. Make sure you check the given "director_name" field  and user previleges again or the resource already exists.';
     const statusCode = 400;
@@ -245,7 +245,7 @@ app.delete('/api/directors/:id', (req, res) => {
   }).catch((err) => {
     msg = `Can't delete the resource with id ${req.params.id}. Either is moved or doesn't exist.`;
     statusCode = 404;
-    logger.error(err);
+    logger.error(err.stack);
   }).finally(() => {
     resultJson = { data: { message: msg } };
     res.status(statusCode).send(resultJson);
