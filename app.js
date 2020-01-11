@@ -3,12 +3,18 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
+const cors = require('cors');
 const logger = require('./config/winston');
 
 
 const app = express();
 app.use(bodyParser.json());
 app.use(morgan('common', { stream: fs.createWriteStream(path.join(__dirname, 'logs/access.log'), { flags: 'a' }) }));
+
+// use default configuration of cors. i.e Allow-content-origin: *
+// Allow all kinds of request i.e. GET, PUT, POST and DELETE.
+// operational Sucess value of 204
+app.use(cors());
 
 const db = require('./src/database/connection');
 
